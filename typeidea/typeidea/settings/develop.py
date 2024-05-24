@@ -1,6 +1,7 @@
 import os.path
 
-from base import *  # NOQA
+from .base import *  # NOQA
+
 
 DEBUG = True
 DATABASES = {
