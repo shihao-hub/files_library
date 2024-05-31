@@ -20,13 +20,20 @@
             <ul class="navbar-nav mr-auto">
                 {% for cate in navs %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'category-list' cate.id%}">{{ cate.name }}</a>
+                    <a class="nav-link" href="{% url 'category-list' cate.id %}">{{ cate.name }}</a>
                 </li>
                 {% endfor %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'download' %}">Download</a>
+                </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search"
-                       aria-label="Search">
+            <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
+                <input class="form-control mr-sm-2"
+                       type="search"
+                       name="keyword"
+                       placeholder="Search"
+                       aria-label="Search"
+                       value="{{ keyword }}">
                 <button class="btn btn-outline-success" type="submit">搜索</button>
             </form>
         </div>
@@ -47,16 +54,23 @@
             <div class="card post">
                 <div class="card body">
                     <h5 class="card-title"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h5>
-                    <!--                    <span class="card-link">作者：{{ post.owner.username }}</span>-->
-                    <span>作者：<a href="{% url 'home-page' %}">{{ post.owner.username }}</a></span>
-                    <span>分类：<a href="{% url 'home-page' %}">{{ post.category.name }}</a></span>
-                    <!--                    <span>标签：<a href="{% url 'home-page' %}">{{ post.tag.name }}</a></span>-->
-                    <!-- 为什么获取到 None？ -->
-                    <!-- 因为似乎压根不能获取 tag？NoNoNo -->
-                    <!--                    {% if tag %}-->
-                    <!--                    <span>标签：<a href="{% url 'home-page' %}">{{ tag.name }}</a></span>-->
-                    <!--                    {% endif %}-->
-                    <p class="card-text">{{ post.desc }}</p>
+                    <div>
+                        <span class="card-link">作者：
+                            <a href="{% url 'home-page' %}">{{ post.owner.username }}</a>
+                        </span>
+                        <span class="card-link">分类：
+                            <a href="{% url 'home-page' %}">{{ post.category.name }}</a>
+                        </span>
+                        <span class="card-link">标签：
+                            {% for tag in post.tag.all %}
+                            <a href="{% url 'tag-list' tag.id %}">{{ tag.name }}</a>
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <p class="card-text">
+                        {{ post.desc }}
+                        <a href="{% url 'post-detail' post.id %}">点击查看完整内容</a>
+                    </p>
                 </div>
             </div>
             {% endfor %}
@@ -73,14 +87,14 @@
             {% endif %}
         </div>
         <div class="col-3">
+            {% for sidebar in sidebars %}
             <div class="card sidebar">
                 <div class="card-body">
-                    {% for sidebar in sidebars %}
                     <h4 class="card-title">{{ sidebar.title }}</h4>
                     <p>{{ sidebar.content_html }}</p>
-                    {% endfor %}
                 </div>
             </div>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -91,9 +105,9 @@
     <div class="container">
         <hr/>
         <nav class="nav category">
-            <a href="{% url 'home-page' %}" class="nav-link">读者</a>
-            <a href="{% url 'home-page' %}" class="nav-link">产品</a>
-            <a href="{% url 'home-page' %}" class="nav-link">工作经历</a>
+            {% for cate in categories %}
+            <a href="{% url 'category-list' cate.id %}" class="nav-link">{{ cate.name }}</a>
+            {% endfor %}
         </nav>
     </div>
     <div class="container power">

@@ -9,6 +9,10 @@ def main():
     # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'typeidea.settings')
     profile = os.environ.get("TYPEIDEA_PROFILE", "develop")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "typeidea.settings.%s" % profile)
+
+    from django.core.management.commands.runserver import Command as Runserver
+    Runserver.default_port = "1060"  # 修改默认端口
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

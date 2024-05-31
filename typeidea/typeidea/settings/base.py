@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     "config",
     "comment",
 
+    "ckeditor",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "blog.middleware.user_id.UserIDMiddleware",
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,7 +58,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'typeidea.urls'
 
+# MY
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": "full",
+        "height": 300,
+        "width": 800,
+        "tabSpaces": 4,
+        "extraPlugins": "codesnippet",
+    }
+}
+
 MY_THEME = "default"
+
+STATIC_ROOT = "/tmp/static"
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "themes", MY_THEME, "static")
+]
 
 TEMPLATES = [
     {

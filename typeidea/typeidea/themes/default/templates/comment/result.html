@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>评论结果页</title>
+    <link rel="stylesheet" href="{% static 'css/comment_result/main.css' %}">
 </head>
 <body>
-$END$
+<div class="result">
+    {% if succeed %}
+    评论成功！
+    <a href="{{ target }}">返回</a>
+    {% else %}
+    评论失败！
+    <ul class="errorlist">
+        {% for field,message in form.errors.items %}
+        <li>错误 {{ forloop.counter }}：{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <!-- 这个就是单纯的返回，不会刷新页面！失败的时候刚刚好！ -->
+    <a href="javascript:window.history.back()">返回</a>
+    {% endif %}
+</div>
 </body>
 </html>

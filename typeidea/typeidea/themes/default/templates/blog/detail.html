@@ -1,22 +1,49 @@
 {% extends "./base.html" %}
 
+{% load static %}
+{% load comment_block %}
+
 {% block title %}
 {{ post.title }}
 {% endblock %}
+
+{% block extra_head %}
+<!-- https://www.bootcdn.cn/highlight.js/9.12.0/styles/googlecode.min.css -->
+<link rel="stylesheet" href="{% static 'css/googlecode.min.css' %}">
+<!-- https://cdn.bootcdn.net/ajax/libs/highlight.js/9.12.0/highlight.min.js -->
+<script src="{% static 'js/highlight.min.js' %}"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
+
 
 {% block main %}
 
 {% if post %}
 <div class="container main">
-    <h1>{{ post.title }}</h1>
+    <div class="row">
+        <h1>{{ post.title }}</h1>
+    </div>
     <div>
         <span>分类：{{ post.category.name }}</span>
         <span>作者：{{ post.owner.username }}</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'home-page' %}">回到首页</a>
     </div>
     <hr/>
     <p>
+        {% autoescape off %}
         {{ post.content }}
+        {% endautoescape %}
     </p>
+    {% comment_block request.path %}
+    <!-- 不行呀，就是不显示。Form格式不对？No，好像是 django-ckeditor 自动处理了很多东西... -->
+    <!--    <script src="{% static 'ckeditor/ckeditor.js' %}"></script>-->
+    <!--    <script type="text/javascript">-->
+    <!--    window.onload = function()-->
+    <!--    {-->
+    <!--        CKEDITOR.replace('content');-->
+    <!--    };-->
+
+    <!--    </script>-->
 </div>
 {% endif %}
 

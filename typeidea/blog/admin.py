@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry
 
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Download
 from .adminforms import PostAdminForm
 from typeidea.custom_site import custom_site
 from typeidea.base_admin import BaseOwnerAdmin
@@ -46,6 +46,11 @@ class TagAdmin(BaseOwnerAdmin):
     post_count.short_description = "相关文章数量"
 
 
+@admin.register(Download, site=custom_site)
+class DownloadAdmin(admin.ModelAdmin):
+    list_display = ("name", "path",)
+    fields = ("name", "path",)
+
 class CategoryOwnerFilter(admin.SimpleListFilter):
     title = "分类"
     parameter_name = "owner_category_id"
@@ -66,6 +71,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
+
 @admin.register(Post, site=custom_site)
 class PostAdmin(BaseOwnerAdmin):
     # class Media:
@@ -77,6 +83,7 @@ class PostAdmin(BaseOwnerAdmin):
     #     js = (
     #         "https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js",
     #     )
+
     form = PostAdminForm
 
     list_display = ["title", "category", "status", "operator", "pv", "uv", "created_time", "owner"]
@@ -116,9 +123,13 @@ class PostAdmin(BaseOwnerAdmin):
                 "content",
             )
         }),
-        ("额外信息", {
-            "classes": ("collapse",),
-            "fields": ("tag",)
+        ("其他", {
+            "fields": (
+                ("tag",)
+            )
+            # 这里的是额外信息，必须点击才能显示
+            # "classes": ("collapse",),
+            # "fields": ("tag",)
         })
     )
 

@@ -67,22 +67,25 @@ class SideBar(models.Model):
 
         # 四种情况全部返回 html
         dt = self.display_type
+        limit = 5  # TODO: 最多只显示 5 个
         if dt == self.DISPLAY_HTML:
             result = self.content
         elif dt == self.DISPLAY_LATEST:
             result = render_to_string(
                 "config/blocks/sidebar_posts.html",
-                {"posts": Post.latest_posts()}
+                {"posts": Post.latest_posts()[:limit], "display_type": "latest"}
             )
         elif dt == self.DISPLAY_MOST_HOT:
             result = render_to_string(
                 "config/blocks/sidebar_posts.html",
-                {"posts": Post.most_hot_posts()}
+                {"posts": Post.most_hot_posts()[:limit], "display_type": "most_hot"}
             )
         elif dt == self.DISPLAY_COMMENT:
             result = render_to_string(
                 "config/blocks/sidebar_comments.html",
-                {"comments": Comment.objects.filter(status=Comment.STATUS_NORMAL)}
+                {"comments": Comment.objects
+                             .filter(status=Comment.STATUS_NORMAL)
+                             .order_by("-created_time")[:limit]}
             )
 
         return result

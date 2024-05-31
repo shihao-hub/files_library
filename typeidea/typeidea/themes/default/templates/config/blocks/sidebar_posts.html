@@ -1,5 +1,10 @@
 <ul>
   {% for post in posts %}
-  <li><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></li>
+  <li><a href="{% url 'post-detail' post.id %}">
+    {{ post.title }}
+    {% if display_type == "most_hot" %}
+    ({{ post.pv }})
+    {% endif %}
+  </a></li>
   {% endfor %}
 </ul>

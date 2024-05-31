@@ -1,5 +1,7 @@
+import mistune as mistune
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 
 # Create your models here.
@@ -60,6 +62,20 @@ class Tag(models.Model):
         return self.name
 
 
+class Download(models.Model):
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = verbose_name_plural = "下载文件"
+
+    name = models.CharField(max_length=260, verbose_name="名称")
+    # path = models.FilePathField(verbose_name="文件路径")
+    path = models.CharField(max_length=260, verbose_name="文件路径")
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     objects = models.Manager()
 
@@ -75,6 +91,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255, verbose_name="标题")
     desc = models.CharField(max_length=1024, blank=True, verbose_name="摘要")  # blank 是业务端可为空，null 是数据库端可为空
     content = models.TextField(verbose_name="正文", help_text="正文必须为 MarkDown 格式")
+    content_html = models.TextField(verbose_name="正文 html 代码", blank=True, editable=False)
     status = models.PositiveIntegerField(default=STATUS_NORMAL, choices=STATUS_ITEMS, verbose_name="状态")
     category = models.ForeignKey(Category, models.CASCADE, verbose_name="分类")  # 外键自动添加个 category_id ？
     tag = models.ManyToManyField(Tag, verbose_name="标签")
@@ -86,6 +103,14 @@ class Post(models.Model):
 
     def __str__(self):
         return "{}-{}-{}".format(self.title, self.category, self.created_time)
+
+    def save(self, *args, **kwargs):
+        # FIXME：添加了 ckeditor 插件之后，不可以再调用 markdown 了，他那边会自动转为 markdown？
+        #   呃，你用 **abc** 这种代码也不行了！可恶啊！果然 Typora 的含金量还是在的！
+        self.content_html = mark_safe(mistune.markdown(self.content))
+        # print(self.content)
+        # print(self.content_html) # debug 模式打印还差不多
+        super().save(*args, **kwargs)
 
     @classmethod
     def get_all(cls):
@@ -121,14 +146,28 @@ class Post(models.Model):
                     .select_related("owner", "category")
         return post_list, category
 
-    @classmethod
-    def latest_posts(cls):
-        queryset = cls.objects \
-            .filter(status=cls.STATUS_NORMAL) \
-            .order_by("-created_time") \
-            .select_related("owner", "category")
+    @staticmethod
+    def get_posts_order_by(order_by, filter_status=None, select_related_list=("owner", "category")):
+        if not filter_status:
+            filter_status = Post.STATUS_NORMAL
+        queryset = Post.objects \
+            .filter(status=filter_status) \
+            .order_by(order_by) \
+            .select_related(*select_related_list)
         return queryset
 
     @classmethod
+    def get_posts(cls):
+        return cls.objects \
+            .filter(status=cls.STATUS_NORMAL) \
+            .order_by("-created_time") \
+            .select_related("owner", "category")
+
+    @classmethod
+    def latest_posts(cls):
+        # FIXME: 在这里切片的话会报错 [:5]？
+        return cls.get_posts_order_by("-created_time")
+
+    @classmethod
     def most_hot_posts(cls):
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by("-pv")
+        return cls.get_posts_order_by("-pv")

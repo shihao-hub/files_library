@@ -1,0 +1,12 @@
+body {TEXT-ALIGN: center;}
+.result {
+    text-align: center;
+    width: 40%;
+    margin: auto;
+}
+.errorlist {
+    color: red;
+}
+ul li {
+    list-style-type: None;
+}

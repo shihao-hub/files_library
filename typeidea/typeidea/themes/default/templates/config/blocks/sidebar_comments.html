@@ -1,6 +1,6 @@
 <ul>
     {% for comment in comments %}
-    <li><a href="{% url 'post-detail' comment.target_id %}">{{ comment.target.title }}</a></li>
-    {{ comment.nickname }} : {{ comment.content }}
+    <li><a href="{{ comment.target }}">评论位置：{{ comment.target.title }}</a></li>
+    {{ comment.nickname }} : {{ comment.content|slice:":30" }}
     {% endfor %}
 </ul>
