@@ -1,8 +1,13 @@
 Restful -> 将一切视为资源
+
 GET posts -> 所有文章
+
 GET posts/1 -> 某篇文章
+
 POST posts -> 创建文章
+
 PUT posts/1 -> 更新文章
+
 DELETE posts/1 -> 删除文章
 
 POST posts/actions/beautify -> 非增删改查的特殊动作
