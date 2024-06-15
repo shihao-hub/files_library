@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "blog",
     "config",
     "comment",
+    "common",
 
     "ckeditor",
 

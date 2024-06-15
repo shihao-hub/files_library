@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry
+from django.contrib import messages
 
 from .models import Post, Category, Tag, Download
 from .adminforms import PostAdminForm
@@ -51,6 +52,7 @@ class DownloadAdmin(admin.ModelAdmin):
     list_display = ("name", "path",)
     fields = ("name", "path",)
 
+
 class CategoryOwnerFilter(admin.SimpleListFilter):
     title = "分类"
     parameter_name = "owner_category_id"
@@ -71,7 +73,6 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
-
 @admin.register(Post, site=custom_site)
 class PostAdmin(BaseOwnerAdmin):
     # class Media:
@@ -86,7 +87,7 @@ class PostAdmin(BaseOwnerAdmin):
 
     form = PostAdminForm
 
-    list_display = ["title", "category", "status", "operator", "pv", "uv", "created_time", "owner"]
+    list_display = ["title", "category", "status", "operator", "upload_post", "pv", "uv", "created_time", "owner"]
     list_display_links = []
 
     list_filter = [CategoryOwnerFilter, "status"]
@@ -137,10 +138,18 @@ class PostAdmin(BaseOwnerAdmin):
 
     def operator(self, obj):
         """自定义操作，返回值即为显示的值，因此生成 html 的话，可以提供点击功能！"""
-        return format_html('<a href = "{}">编辑</a>', reverse("cus_admin:blog_post_change", args=(obj.id,)))
+        return format_html('<a href = "{}">编辑</a>',
+                           reverse("cus_admin:blog_post_change", args=(obj.id,)))
 
     # ? Python 也能和 Java 一样吗？这里是不是类似 Java 的 static {}
     operator.short_description = "操作"
+
+    def upload_post(self, obj):
+        return format_html(
+            '<a href = "{}?post_id={}">上传</a>',
+            reverse("common-upload_post"), obj.id)
+
+    upload_post.short_description = "上传"
 
     def get_queryset(self, request):
         qs = super(PostAdmin, self).get_queryset(request)

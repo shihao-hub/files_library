@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>文件上传 - typeidea 博客系统</title>
+</head>
+<body>
+
+<div>
+    <div>
+        <a href="javascript:window.history.back()">返回</a>
+    </div>
+
+    <div>
+        <form class="form-group" action="{% url 'common-upload_post' %}" method="POST">
+            {% csrf_token %}
+            <input name="target" type="hidden" value="{{ target }}">
+            <div>
+                {{ form }}
+            </div>
+            <input type="submit" value="上传">
+        </form>
+    </div>
+
+    {% if succeed == "POST_false" %}
+    <div>
+        <p>{{ msg }}</p>
+    </div>
+    {% elif succeed == "POST_true" %}
+    <p>上传成功，文件内容已被修改。</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

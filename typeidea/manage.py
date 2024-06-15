@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from datetime import datetime
 
 
 def main():
@@ -25,4 +26,6 @@ def main():
 
 
 if __name__ == '__main__':
+    # NOTE: 此处应该在 While True，故 main() 下面的内容只有在中断的时候才会之前，而且会执行两遍？
+    #   罢了，不捣鼓了，浪费时间。有这功夫看看书都比这好，毕竟半吊子的捣鼓就是浪费时间！
     main()
