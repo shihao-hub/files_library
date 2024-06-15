@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<db xmlns:ns1="https://chat.lify.vip/chat/">
+    <ns1:person name="abc">
+        <name name="abcdef">John</name>
+        <age>30</age>
+        <city>New York</city>
+    </ns1:person>
+</db>
