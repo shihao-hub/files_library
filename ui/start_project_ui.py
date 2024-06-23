@@ -17,7 +17,7 @@ import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer, QDateTime, Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QMenu, QAction, QMessageBox
+from PyQt5.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog
 
 from ui.demo import Ui_MainWindow
 
@@ -33,9 +33,11 @@ class MainWindow(Ui_MainWindow):
 
         self.pushButton.clicked.connect(lambda: self.text_collation())
         self.pushButton.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.pushButton.customContextMenuRequested.connect(self.show_context_menu)
+        self.pushButton.customContextMenuRequested.connect(self.set_menu_for_pushButton)
 
         self.pushButton_3.clicked.connect(lambda: self.text_remove_duplicates())
+        self.pushButton_3.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.pushButton_3.customContextMenuRequested.connect(self.set_menu_for_pushButton_3)
 
         self.current_time_timer = QTimer()
         self.current_time_timer.timeout.connect(lambda: self.update_current_time(main_window))
@@ -48,6 +50,19 @@ class MainWindow(Ui_MainWindow):
         # self.label_2.setVisible(True)
         self._set_current_time_for_label_2()
 
+        self.set_menu_actions_callback()
+
+    def callback_for_actionopen(self):
+        filename, _ = QFileDialog.getSaveFileName(self.main_window,
+                                                  'Save File',
+                                                  '',
+                                                  'Text Files (*.txt);;All Files (*)')
+
+    def set_menu_actions_callback(self):
+        # Test
+        self.actionopen.setShortcut("Ctrl+H")
+        self.actionopen.triggered.connect(self.callback_for_actionopen)
+
     def logger(self, msg: str, level=0):
         prefix = (" INFO", "DEBUG", "FATAL")[level]
         self.plainTextEdit_3.appendPlainText("["
@@ -57,14 +72,23 @@ class MainWindow(Ui_MainWindow):
                                              + "]:  "
                                              + msg)
 
-    def show_context_menu(self, position):
-        menu = QMenu()
+    def set_menu_for_pushButton(self, position):
+        menu = QMenu(self.pushButton)
 
         action1 = QAction("仅处理剪切板")
         action1.triggered.connect(lambda: self.text_collation(True))
         menu.addAction(action1)
 
         menu.exec_(self.pushButton.mapToGlobal(position))
+
+    def set_menu_for_pushButton_3(self, position):
+        menu = QMenu(self.pushButton_3)
+
+        action1 = QAction("仅处理剪切板")
+        action1.triggered.connect(lambda: self.text_remove_duplicates(True))
+        menu.addAction(action1)
+
+        menu.exec_(self.pushButton_3.mapToGlobal(position))
 
     def update_current_time(self, main_window):
         self._set_current_time_for_label_2()
@@ -74,12 +98,13 @@ class MainWindow(Ui_MainWindow):
         self.label_2.setText(current_time)
 
     def text_collation(self, enable_clip=None):
-        res_len = 0
+
         try:
             import pyperclip
             import pangu
 
             if enable_clip:
+                # 剪切板上的 \n 会被存储为 \r\n 所以会多出字符来
                 text = pyperclip.paste()
                 res_len = len(text)
                 pyperclip.copy(pangu.spacing_text(text))
@@ -103,25 +128,29 @@ class MainWindow(Ui_MainWindow):
                 yield line
                 seen.add(line)
 
-    def text_remove_duplicates(self):
-        res_len = 0
+    def text_remove_duplicates(self, enable_clip=None):
         try:
-            # import pyperclip
-
-            # res = []
-            # lines = re.compile(r"\r*\n").split(pyperclip.paste())
-            # for line in self._dedup_for_text_remove_duplicates(lines):
-            #     res.append(line)
-            # pyperclip.copy("\n".join(res))
-            # del res, lines
-
-            res = []
-            lines = re.compile(r"\r*\n").split(self.plainTextEdit.toPlainText())
-            for line in self._dedup_for_text_remove_duplicates(lines):
-                res.append(line)
-            res_len = len(res) - 1 + sum(len(e) for e in res)
-            self.plainTextEdit_2.setPlainText("\n".join(res))
-            del res, lines
+            import pyperclip
+            if enable_clip:
+                res = []
+                text = pyperclip.paste()
+                res_len = len(text)
+                lines = re.compile(r"\r*\n").split(text)
+                for line in self._dedup_for_text_remove_duplicates(lines):
+                    res.append(line)
+                # res_len = len(res) - 1 + sum(len(e) for e in res)
+                pyperclip.copy("\n".join(res))
+                del res, lines, text
+            else:
+                res = []
+                text = pyperclip.paste()
+                res_len = len(text)
+                lines = re.compile(r"\r*\n").split(self.plainTextEdit.toPlainText())
+                for line in self._dedup_for_text_remove_duplicates(lines):
+                    res.append(line)
+                # res_len = len(res) - 1 + sum(len(e) for e in res)
+                self.plainTextEdit_2.setPlainText("\n".join(res))
+                del res, lines, text
         except:
             print(traceback.format_exc())
         else:
