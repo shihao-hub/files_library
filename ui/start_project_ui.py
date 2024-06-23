@@ -119,7 +119,7 @@ class MainWindow(Ui_MainWindow):
         else:
             msg = f"文本整理结束，共处理 {res_len} 个字符。"
             self.logger(msg)
-            QMessageBox.information(self.main_window, "通知", msg)
+            # QMessageBox.information(self.main_window, "通知", msg)
 
     def _dedup_for_text_remove_duplicates(self, lines):
         seen = set()
@@ -156,7 +156,7 @@ class MainWindow(Ui_MainWindow):
         else:
             msg = f"文本去重结束，共处理 {res_len} 个字符。"
             self.logger(msg)
-            QMessageBox.information(self.main_window, "通知", msg)
+            # QMessageBox.information(self.main_window, "通知", msg)
 
     def pdf_merger(self, files, out_file):
         try:

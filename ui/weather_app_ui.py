@@ -20,7 +20,7 @@ def clock(func):
     return wrapper
 
 
-@clock
+# @clock
 def get_weather_info(city_id):
     base_url = "http://www.weather.com.cn/data/sk/"
     response = requests.get(base_url + str(city_id) + ".html")
