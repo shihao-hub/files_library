@@ -305,6 +305,18 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="3">
+      <widget class="QPushButton" name="input_clear_button">
+       <property name="font">
+        <font>
+         <family>微软雅黑</family>
+        </font>
+       </property>
+       <property name="text">
+        <string>清空</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="input_label">
        <property name="font">
@@ -330,31 +342,19 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QPushButton" name="input_clear_button">
-       <property name="font">
-        <font>
-         <family>微软雅黑</family>
-        </font>
-       </property>
-       <property name="text">
-        <string>清空</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0" colspan="4">
       <widget class="QPlainTextEdit" name="input_text_edit">
        <property name="font">
         <font>
          <family>微软雅黑</family>
         </font>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
