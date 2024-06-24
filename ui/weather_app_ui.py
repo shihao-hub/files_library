@@ -1,4 +1,5 @@
 import functools
+import json
 import pprint
 import time
 import traceback
@@ -8,6 +9,11 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from ui.demo3 import Ui_Form
 
+
+# Q: open 不赋值是不是会自动清理？
+#   为什么 ../weather_app_config.json 会提示没有这个文件？
+#       当前文件不是在 ui 目录下吗？难不成 import 类似 c 的 include ？
+SETTINGS = json.load(open(r"weather_app_config.json",encoding="utf-8"))
 
 def clock(func):
     @functools.wraps(func)
@@ -26,6 +32,8 @@ def get_weather_info(city_id):
     response = requests.get(base_url + str(city_id) + ".html")
     # print(response.encoding) # ISO-8859-1
     response.encoding = "utf-8"
+    if response.status_code != 200:
+        raise requests.HTTPError(f"response.status_code({response.status_code}) != 200")
     data = response.json()
     return data["weatherinfo"]
 
@@ -38,11 +46,7 @@ def format_weather_info(data):
             f"湿度：{data['SD']}")
 
 
-CITY_CODE = {
-    "北京": "101010100",
-    "天津": "101030100",
-    "上海": "101020100",
-}
+CITY_CODE = SETTINGS["city_code"]
 
 
 class WorkerThread(QThread):
@@ -64,7 +68,7 @@ class Form(Ui_Form):
     def __init__(self, form):
         self.setupUi(form)
 
-        self.weatherComboBox.addItems(["北京", "天津", "上海"])
+        self.weatherComboBox.addItems(SETTINGS["city_code"].keys())
 
         """ 2024/06/23
             如果不放在线程中，self.resultText.setText("查询中，请等待...") 这段代码无效
@@ -97,7 +101,7 @@ class Form(Ui_Form):
             msg = format_weather_info(get_weather_info(city_code))
         except:
             msg = "查询失败"
-            # print(traceback.format_exc())
+            print(traceback.format_exc())
         finally:
             msg += "\n" + "耗时：{:.4f} s".format(time.time() - time_s)
         return msg
