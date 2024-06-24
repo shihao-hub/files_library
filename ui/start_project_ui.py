@@ -55,9 +55,9 @@ class MainWindow(Ui_MainWindow):
         self.md5_button.clicked.connect(self.callback_for_md5)
 
         self.input_clear_button.clicked.connect(lambda: self.input_text_edit.clear())
-        self.input_clear_button.hide()
+        # self.input_clear_button.hide()
         self.output_clear_button.clicked.connect(lambda: self.output_text_edit.clear())
-        self.output_clear_button.hide()
+        # self.output_clear_button.hide()
         self.log_clear_button.clicked.connect(lambda: self.log_text_edit.clear())
 
         self.actionTest.triggered.connect(self.callback_for_actionTest)
@@ -66,7 +66,10 @@ class MainWindow(Ui_MainWindow):
         self.actionOpen.triggered.connect(self.callback_for_actionOpen)
 
     def callback_for_md5(self):
-        pass
+        import hashlib
+        md5 = hashlib.md5()
+        md5.update(self.input_text_edit.toPlainText().encode("utf-8"))
+        self.output_text_edit.setPlainText(md5.hexdigest())
 
     def callback_for_actionTest(self):
         def assert_equal(first, second, msg=None):
@@ -182,6 +185,7 @@ class MainWindow(Ui_MainWindow):
     def _dedup_for_text_remove_duplicates(self, lines):
         seen = set()
         for line in lines:
+            line = line.strip()
             if line not in seen:
                 yield line
                 seen.add(line)
