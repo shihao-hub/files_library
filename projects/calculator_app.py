@@ -5,6 +5,29 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
+class Button:
+    def __init__(self,
+                 grid_layout,
+                 on_clicked,
+                 text,
+                 font,
+                 row,
+                 column,
+                 row_span,
+                 column_span,
+                 parent=None):
+        self.grid_layout = grid_layout
+
+        button = QtWidgets.QPushButton(parent)
+        button.setText(text)
+        button.setMaximumSize(QtCore.QSize(50, 16777215))
+        button.setFont(font)
+        button.setFlat(False)
+        button.setObjectName("button")
+        button.clicked.connect(lambda: on_clicked())
+        self.grid_layout.addWidget(button, row, column, row_span, column_span)
+
+
 class Calculator(object):
     def __init__(self, main_window):
         self.grid_layout = None
@@ -31,14 +54,15 @@ class Calculator(object):
             self.result_line_edit.setText(self.result_line_edit.text() + text)
 
     def _add_button(self, text, row, column, row_span, column_span, on_clicked=None):
-        button = QtWidgets.QPushButton(self.grid_layout_widget)
-        button.setText(text)
-        button.setMaximumSize(QtCore.QSize(50, 16777215))
-        button.setFont(self.font)
-        button.setFlat(False)
-        button.setObjectName("button")
-        button.clicked.connect(on_clicked or (lambda: self.on_button_clicked()))
-        self.grid_layout.addWidget(button, row, column, row_span, column_span)
+        Button(self.grid_layout,
+               on_clicked or self.on_button_clicked,
+               text,
+               self.font,
+               row,
+               column,
+               row_span,
+               column_span,
+               parent=self.grid_layout_widget)
 
     def setup(self):
         self.main_window.setObjectName("form")
