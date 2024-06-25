@@ -59,6 +59,7 @@ class MainWindow(Ui_MainWindow):
         self.output_clear_button.clicked.connect(lambda: self.output_text_edit.clear())
         # self.output_clear_button.hide()
         self.log_clear_button.clicked.connect(lambda: self.log_text_edit.clear())
+        # self.log_clear_button.setMaximumWidth
 
         self.actionTest.triggered.connect(self.callback_for_actionTest)
 
