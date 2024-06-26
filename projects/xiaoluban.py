@@ -44,7 +44,7 @@ class PreValidation(ISCLDistributor):
     pass
 
 
-pre_validation = PreValidation("https://httpbin.org/", "get", "post")
+pre_validation = PreValidation("https://httpbin.org/", "/get", "/post")
 pprint.pprint(pre_validation.get_one_record(query={
     "name": "zsh"
 }))
