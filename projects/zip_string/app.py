@@ -81,4 +81,4 @@ class ZipFileCodec:
         zip_file_codec = ZipFileCodec("zip_test_out_binary")
         # zip_file_codec.encode(r"D:\games\Steam\steamapps\common\Don't Starve Together\data\databundles\scripts.zip")
         zip_file_codec.encode(r"markdowns.zip")
-        zip_file_codec.decode("scripts_out.zip")
+        zip_file_codec.decode("zip_test_out.zip")
