@@ -7,7 +7,7 @@ import traceback
 import requests
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from ui.demo3 import Ui_Form
+from ui.weather_ui import Ui_Form
 
 
 # Q: open 不赋值是不是会自动清理？

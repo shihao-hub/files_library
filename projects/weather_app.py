@@ -3,7 +3,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget
 
-from ui.weather_app_ui import Form
+from ui.weather import Form
 
 
 
