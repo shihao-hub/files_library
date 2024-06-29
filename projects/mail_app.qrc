@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="pic">
+    <file>mail_app/images/邮箱_副本.png</file>
+    <file>mail_app/images/邮箱.png</file>
+    <file>mail_app/images/python.jpg</file>
+  </qresource>
+</RCC>
