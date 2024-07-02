@@ -2,11 +2,13 @@ import functools
 import json
 import sys
 
+import pymongo
+
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 
 from mail_app.mail_manager import MailManager
-from ui.mail import Ui_Mail
+from mail_app.mail import Ui_Mail
 
 
 def send_button_exit(func):
@@ -26,7 +28,13 @@ class Mail(QMainWindow, Ui_Mail):
 
         self.setupUi(self)  # 传入自己
 
+        self.mongodb_client = pymongo.MongoClient("mongodb://localhost:27017")
+        self.mongodb_db = self.mongodb_client["mail_app"]
+
         self._on_load()
+
+        self.setFixedWidth(self.frameSize().width())
+        self.setFixedHeight(self.frameSize().height())
 
     def _messagebox_notice(self, msg):
         QMessageBox.information(self, "通知", msg)
@@ -71,16 +79,31 @@ class Mail(QMainWindow, Ui_Mail):
     @QtCore.pyqtSlot()
     def on_draft_save_button_clicked(self):
         # TODO: 后面改成 sqlite3 这个轻量级数据库！
-        with open(self.json_data_path, "w", encoding="utf-8") as file:
-            json.dump({
-                "drafts": [
-                    {
-                        "receivers": self.receiver_line_edit.text(),
-                        "subject": self.subject_line_edit.text(),
-                        "body": self.body_text_edit.toPlainText()
-                    }
-                ]
-            }, file)
+        # with open(self.json_data_path, "w", encoding="utf-8") as file:
+        #     json.dump({
+        #         "drafts": [
+        #             {
+        #                 "receivers": self.receiver_line_edit.text(),
+        #                 "subject": self.subject_line_edit.text(),
+        #                 "body": self.body_text_edit.toPlainText()
+        #             }
+        #         ]
+        #     }, file)
+
+        data = {
+            "receivers": self.receiver_line_edit.text(),
+            "subject": self.subject_line_edit.text(),
+            "body": self.body_text_edit.toPlainText()
+        }
+        if not self.mongodb_db["drafts"]:
+            self.mongodb_db["drafts"] = [data]
+        else:
+            self.mongodb_db["drafts"].insert_one({
+                "receivers": self.receiver_line_edit.text(),
+                "subject": self.subject_line_edit.text(),
+                "body": self.body_text_edit.toPlainText()
+            })
+
         print("存草稿成功")
 
 
