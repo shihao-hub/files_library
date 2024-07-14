@@ -19,7 +19,7 @@ def resize_image(path, height, width):
     :return: None
     """
     with Image.open(path) as img:
-        new_img = img.resize((height, width))
+        new_img = img.resize((height, width),Image.LANCZOS)
         dirname = os.path.dirname(path)
         basename: str = os.path.basename(path)
         dot_pos = basename.find(r".")
@@ -32,4 +32,4 @@ def resize_image(path, height, width):
                 + basename[dot_pos:]))
 
 
-resize_image(r"resources/1.jpg", 256, 256)
+resize_image(r"resources/邮箱.png", 40, 40)
