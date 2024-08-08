@@ -147,5 +147,6 @@ class Chapter02:
 
 if __name__ == '__main__':
     c01 = Chapter01(Redis(host="127.0.0.1", port=6379, db=0))
+    # 此处可以移入类的测试函数中，此外类似 django 的测试，我这边测试结束也应该试着将旧数据删除，也就是回滚数据库
     c01.post_article(**dict(user="张世豪", title="test4", link="https://test4"))
     c01.post_article(**dict(user="张世豪", title="test5", link="https://test5"))
