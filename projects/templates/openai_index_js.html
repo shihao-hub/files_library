@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="zh">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>主页</title>
+
+    <style>
+        .div_center {
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            padding-left: 100px; /* 内边距 */
+            padding-right: 100px; /* 内边距 */
+        }
+
+        .overlay {
+            position: fixed; /* 固定在视口 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+            z-index: 999; /* 确保在内容上面 */
+            display: none; /* 初始隐藏 */
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite; /* 动画效果 */
+            position: absolute; /* 绝对定位 */
+            top: 50%; /* 垂直中心 */
+            left: 50%; /* 水平中心 */
+            transform: translate(-50%, -50%); /* 移动自身的宽高的一半 */
+            z-index: 1000; /* 确保 loader 在其他元素之上 */
+            display: none; /* 初始隐藏 */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .preview {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div id="overlay" class="overlay" style="display: none;"></div>
+<div id="loader" class="loader" style="display: none;"></div>
+
+<div class="div_center">
+    <h1>欢迎来到主页</h1>
+    <input type="text" id="inputBox" placeholder="请输入你的问题">
+    <button onclick="submitData()">提交</button>
+</div>
+
+<div class="div_center">
+    <h2>回答:</h2>
+    <!--    <div id="resultBox" style="border: 1px solid #000; padding: 10px;"></div>-->
+    <!--    <textarea id="markdownInput" placeholder="" rows="10"></textarea>-->
+    <div id="preview" class="preview"></div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    async function submitData() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("loader").style.display = "block";
+
+        // 没办法，因为浏览器会提前发送 OPTIONS 请求，而这个网站这个请求没有结果。。。
+        fetch("https://chat.lify.vip/api/chat/openai", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-lobe-chat-auth": "eyJhbGciOiJIUzI1NiJ9.eyJhY2Nlc3NDb2RlIjoiIiwibWVzc2FnZUlkIjoiNzQwNDk3NSIsIm9wZW5pZCI6Im9BRHdsNlpGUDZ1OHhrcExGUzVHY3ZxZndiTWsiLCJ1c2VySWQiOiJlMzY3NDU0Zi05YTVkLTQ1MzMtYTY1ZC1mOTFlZmRjOTBhN2MiLCJpYXQiOjE3MjUwNDE3MzN9.04QEH1DYln0EKydOqdstRvBtZoLPV8-4QpNJhKTNv_o"
+            },
+            body: JSON.stringify({
+                "frequency_penalty": 0,
+                "max_tokens": 4096,
+                "messages": [{"content": document.getElementById("inputBox").value, "role": "user"}],
+                "model": "gpt-4o-mini",
+                "presence_penalty": 0,
+                "stream": true,
+                "temperature": 0.6,
+                "top_p": 0.99,
+            }),
+        })
+            .then(response => response.text())
+            .then(data => {
+                // document.getElementById("resultBox").innerText = data.result;
+                // document.getElementById("markdownInput").innerText = data.result;
+                let res = [];
+                const regex = /data:\s*"(.*?)"/g;
+                while ((matches = regex.exec(data)) !== null) {
+                    res.push(matches[1]);
+                }
+                const markdownText = res.join("");
+                document.getElementById("preview").innerHTML = marked.parse(markdownText);
+            })
+            .finally(() => {
+                document.getElementById("overlay").style.display = "none";
+                document.getElementById("loader").style.display = "none";
+            });
+
+    }
+</script>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>

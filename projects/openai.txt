@@ -1,0 +1,15 @@
+GitHub Pages 是 GitHub 提供的一项服务，允许用户将静态网站直接托管在 GitHub 上。用户可以使用 GitHub 仓库中的文件（如 HTML、CSS 和 JavaScript）来创建和发布个人、项目或组织的网站。GitHub Pages 适用于个人博客、项目文档、作品集等。
+
+以下是 GitHub Pages 的一些主要特点：
+
+1. **简易设置**：用户只需创建一个新的仓库，上传网站文件，GitHub 就会自动生成一个可访问的网站。
+
+2. **自定义域名**：用户可以将自己的域名与 GitHub Pages 关联，从而使用自定义网址。
+
+3. **支持 Jekyll**：GitHub Pages 支持 Jekyll，这是一个静态网站生成器，可以帮助用户更轻松地创建和管理网站内容。
+
+4. **免费托管**：GitHub Pages 提供免费的托管服务，用户只需拥有 GitHub 帐户。
+
+5. **版本控制**：由于 GitHub Pages 基于 GitHub 仓库，用户可以利用版本控制的功能，跟踪和管理网站的更改。
+
+总之，GitHub Pages 是一个方便的工具，适合开发者和非开发者用来快速发布和托管静态网站。stop
