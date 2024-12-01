@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>抖音渡一 Web 前端学习</title>
+
+    <style>
+        @property --l {
+          syntax: "<number>";
+            initial-value: unset;
+            inherits: false;
+        }
+        /* svg 的描边动画：好厉害，基本的一些东西做出来这种效果，这是需要天赋的... 小操作拼成大操作 */
+        .svg_p {
+            fill: none; /* 去除填充 */
+            stroke: #f40; /* 描边颜色 */
+            stroke-width: 3; /* 宽度 */
+            stroke-dasharray: var(--l); /* 虚线段的长度 */
+            stroke-dashoffset: var(--l);; /* 设置距离虚线起始位置的偏移量，简便记忆：左边为起始点，该值为正数时等于右边往左边偏移了 */
+            animation: stroke 3s forwards; /* 应用动画 */
+            stroke-linecap: round; /* 圆形线头 */
+        }
+
+        @keyframes stroke {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 打开文件夹 -->
+<button id="access_folder_button">打开文件夹</button>
+
+<!-- svg 的描边动画：https://v.douyin.com/CeiJRLr7h/ -->
+<svg class="svg_icon" width="200" height="200">
+    <line class="svg_p" x1="0" y1="50%" x2="100%" y2="50%"></line>
+    <circle class="svg_p" r="40" cx="50%" cy="50%" fill="none"></circle>
+    <!-- 下面这个 path 的 d 不太明白 -->
+    <path class="svg_p" d="M3.4,11.9l8.8,4.4l8.4-4.4"></path>
+    <path class="svg_p" d="M3.4,16.2l8.8,4.5l8.4-4.5"></path>
+    <path class="svg_p" d="M3.7,7.8l8.6-4.5l8,4.5l-8,4.3L3.7,7.8z"></path>
+</svg>
+
+<script>
+    /* 打开文件夹 */
+    (function () {
+        const btn = document.getElementById("access_folder_button");
+        btn.onclick = async function () {
+            // 刚刚发现个相对好的习惯，写代码的时候就直接抽出去，不要写完再抽取
+            const handle = await showDirectoryPicker();
+            console.log(handle.name);
+            await processHandle(handle, 1);
+        };
+
+        async function processHandle(handle, level) {
+            // console.log(handle);
+            if (handle.kind === "file") {
+                return;
+            }
+            // entries：异步迭代器
+            const childHandles = await handle.values();
+            for await (const childHandle of childHandles) {
+                if (childHandle.kind === "file") {
+                    const file = await childHandle.getFile();
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        console.log(e.target.result || "Content: " + file.name);
+                    };
+                    reader.readAsText(file);
+                }
+                console.log("  ".repeat(level) + childHandle.name);
+                await processHandle(childHandle, level + 1);
+            }
+        }
+    })();
+
+    /* svg 的描边动画 */
+    (function () {
+        /* (Q)!: 这个长度是默认长度吗？哦，是 svg 标签的长度 */
+        const ps = document.querySelectorAll(".svg_p");
+        ps.forEach((e) => {
+            const len = e.getTotalLength() + 1;
+            e.style.setProperty("--l", len);
+        });
+    })();
+</script>
+</body>
+</html>
