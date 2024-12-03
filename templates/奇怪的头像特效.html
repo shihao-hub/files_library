@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
 
+    <style>
+        img {
+            --s: 200px;
+            --c1: #c02942;
+            --c2: #ecd078;
+            --b: 5px;
+
+            width: var(--s);
+            height: var(--s);
+            cursor: pointer;
+            transition: 0.5s;
+            outline: 5px solid;
+
+            /* 实现居中效果 */
+            display: block;
+            margin: 0 auto;
+            /*border-radius: 50%;*/
+            /**
+             * 使用径向渐变实现圆形效果
+             * closest-side：表示以离圆心最近的边为结束点
+             */
+            background: radial-gradient(
+                    circle closest-side, /* 圆，表示以离圆心最近的边为结束点 */
+                    var(--c2) calc(100% - var(--b)),
+                    var(--c1) 100%,
+                    lightblue 100%
+            );
+        }
+
+        img:hover {
+            transform: scale(1.35);
+        }
+    </style>
+</head>
+<body>
+<!-- https://v.douyin.com/CeiJ8roKX/ -->
+<img src="../static/img/人体炮弹.png" alt="人体炮弹.png"/>
+</body>
+</html>
